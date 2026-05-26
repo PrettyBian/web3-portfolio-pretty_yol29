@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prëtty — Web3 Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C96B;
+    --gold-dim: #8A6A28;
+    --ink: #080B12;
+    --ink2: #0D1220;
+    --ink3: #131928;
+    --surface: #161D2E;
+    --surface2: #1C2438;
+    --border: rgba(201,168,76,0.18);
+    --border-bright: rgba(201,168,76,0.45);
+    --text: #EAE6DA;
+    --text-muted: #8A91A8;
+    --text-dim: #4A5268;
+    --accent-cyan: #4DD9C8;
+    --accent-purple: #8B7CF8;
+    --glow: rgba(201,168,76,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--ink);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  /* GRID BACKGROUND */
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 1.2rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(8,11,18,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  .nav-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--gold);
+    border: 0.5px solid var(--border-bright);
+    padding: 0.3rem 0.8rem;
+    border-radius: 2rem;
+    letter-spacing: 0.08em;
+  }
+
+  /* SECTIONS */
+  section {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 3rem 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent-cyan);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .hero-tag::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--accent-cyan);
+  }
+
+  .hero-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+
+  .hero-name span {
+    color: var(--gold);
+    display: block;
+  }
+
+  .hero-alias {
+    font-family: 'DM Mono', monospace;
+    font-size: 1rem;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-alias em {
+    color: var(--gold-dim);
+    font-style: normal;
+  }
+
+  .hero-bio {
+    max-width: 560px;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    font-weight: 300;
+    line-height: 1.75;
+    margin-bottom: 3rem;
+    border-left: 2px solid var(--border-bright);
+    padding-left: 1.5rem;
+  }
+
+  .hero-bio strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--gold);
+    border: none;
+    padding: 0.85rem 2rem;
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.1s;
+    font-weight: 600;
+  }
+
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+  .btn-outline {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: transparent;
+    border: 0.5px solid var(--border-bright);
+    padding: 0.85rem 2rem;
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .btn-outline:hover {
+    background: var(--glow);
+    border-color: var(--gold);
+  }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+    margin-top: 5rem;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .stat-box {
+    background: var(--ink2);
+    padding: 1.5rem 1.8rem;
+    transition: background 0.2s;
+  }
+
+  .stat-box:hover { background: var(--ink3); }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.35rem;
+  }
+
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* SECTION CONTAINER */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 6rem 3rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 2.2rem;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 0.5px;
+    background: var(--border);
+  }
+
+  /* ROLES */
+  .roles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .role-card {
+    background: var(--ink2);
+    padding: 2rem;
+    position: relative;
+    transition: background 0.2s;
+    overflow: hidden;
+  }
+
+  .role-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--gold);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .role-card:hover { background: var(--ink3); }
+  .role-card:hover::before { opacity: 1; }
+
+  .role-card.featured {
+    border-top: 2px solid var(--gold);
+    background: rgba(201,168,76,0.04);
+  }
+
+  .role-card.featured::after {
+    content: 'ACTIVE';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    background: rgba(201,168,76,0.12);
+    padding: 0.2rem 0.6rem;
+    border-radius: 2rem;
+  }
+
+  .role-protocol {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--accent-cyan);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+
+  .role-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.8rem;
+    line-height: 1.3;
+  }
+
+  .role-desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  .role-tags {
+    margin-top: 1.2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    border: 0.5px solid var(--border);
+    padding: 0.2rem 0.6rem;
+    border-radius: 2rem;
+    letter-spacing: 0.05em;
+  }
+
+  .tag.gold {
+    color: var(--gold-dim);
+    border-color: rgba(201,168,76,0.3);
+    background: rgba(201,168,76,0.06);
+  }
+
+  /* SKILLS */
+  .skills-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+
+  .skill-group-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .skill-item {
+    margin-bottom: 1.2rem;
+  }
+
+  .skill-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.4rem;
+  }
+
+  .skill-name {
+    font-size: 0.9rem;
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  .skill-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+  }
+
+  .skill-bar {
+    height: 2px;
+    background: var(--surface2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .skill-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+    border-radius: 2px;
+    animation: fillBar 1.2s ease forwards;
+    transform-origin: left;
+  }
+
+  @keyframes fillBar {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  .chains-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .chain-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    padding: 0.4rem 1rem;
+    border-radius: 2rem;
+  }
+
+  /* PROJECTS */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .project-card {
+    background: var(--ink2);
+    padding: 2rem;
+    transition: background 0.2s;
+  }
+
+  .project-card:hover { background: var(--surface); }
+
+  .project-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--surface2);
+    border: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.2rem;
+    font-size: 1.1rem;
+  }
+
+  .project-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .project-desc {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+    font-weight: 300;
+    margin-bottom: 1rem;
+  }
+
+  .project-metric {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent-cyan);
+    letter-spacing: 0.08em;
+  }
+
+  /* BUILDMINDZ FEATURE */
+  .buildmindz-feature {
+    background: var(--ink2);
+    border: 0.5px solid var(--border-bright);
+    border-radius: 4px;
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1px;
+  }
+
+  .buildmindz-feature::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-dim));
+  }
+
+  .bm-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .bm-left {}
+
+  .bm-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .bm-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 2.2rem;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 1.2rem;
+    letter-spacing: -0.02em;
+  }
+
+  .bm-title span { color: var(--gold); }
+
+  .bm-desc {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    font-weight: 300;
+    margin-bottom: 1.5rem;
+  }
+
+  .bm-right {}
+
+  .bm-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+
+  .bm-metric {
+    background: var(--ink3);
+    padding: 1.2rem 1.4rem;
+  }
+
+  .bm-metric-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .bm-metric-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .bm-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .bm-tl-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .bm-tl-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    margin-top: 0.45rem;
+    flex-shrink: 0;
+  }
+
+  .bm-tl-text {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  .bm-tl-text strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* PHILOSOPHY */
+  .philosophy-section {
+    background: var(--surface);
+    border-top: 0.5px solid var(--border);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .philosophy-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .quote-block {
+    position: relative;
+  }
+
+  .quote-mark {
+    font-family: 'Syne', sans-serif;
+    font-size: 8rem;
+    color: var(--gold);
+    opacity: 0.15;
+    line-height: 0.6;
+    margin-bottom: 1rem;
+    display: block;
+    font-weight: 800;
+  }
+
+  .quote-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    margin-bottom: 1rem;
+  }
+
+  .quote-attr {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    letter-spacing: 0.12em;
+  }
+
+  .values-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .value-item {
+    display: flex;
+    gap: 1.2rem;
+    align-items: flex-start;
+    padding: 1.2rem 1.4rem;
+    background: var(--ink2);
+    border: 0.5px solid var(--border);
+    border-radius: 4px;
+    transition: border-color 0.2s;
+  }
+
+  .value-item:hover { border-color: var(--border-bright); }
+
+  .value-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    background: rgba(201,168,76,0.1);
+    border: 0.5px solid var(--border-bright);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .value-content {}
+
+  .value-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+
+  .value-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-weight: 300;
+    line-height: 1.55;
+  }
+
+  /* CHAINS & TOKENS */
+  .tokens-section {}
+
+  .tokens-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .token-card {
+    background: var(--ink2);
+    padding: 1.5rem 1.8rem;
+    transition: background 0.2s;
+  }
+
+  .token-card:hover { background: var(--surface); }
+
+  .token-symbol {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--gold);
+    margin-bottom: 0.3rem;
+  }
+
+  .token-name {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+    font-weight: 300;
+  }
+
+  .token-strategy {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent-cyan);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 0.5px solid var(--border);
+    padding: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .footer-brand {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-info {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    line-height: 1.8;
+    text-align: center;
+  }
+
+  .footer-handle {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-handle span { color: var(--gold); }
+
+  /* DIVIDER */
+  .section-divider {
+    height: 0.5px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 0 3rem;
+  }
+
+  /* SCROLL ANIMATION */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: fadeUp 0.7s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+  .delay-5 { animation-delay: 0.5s; }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero { padding: 7rem 1.5rem 3rem; }
+    .hero-stats { grid-template-columns: 1fr 1fr; }
+    .container { padding: 4rem 1.5rem; }
+    .skills-layout { grid-template-columns: 1fr; }
+    .bm-grid { grid-template-columns: 1fr; }
+    .philosophy-grid { grid-template-columns: 1fr; }
+    footer { padding: 2rem 1.5rem; }
+    .section-divider { margin: 0 1.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Prëtty.eth</div>
+  <ul class="nav-links">
+    <li><a href="#roles">Roles</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#buildmindz">BuildMindz</a></li>
+    <li><a href="#stack">Stack</a></li>
+  </ul>
+  <div class="nav-badge">Open to Collabs</div>
+</nav>
+
+<!-- HERO -->
+<section>
+  <div class="hero">
+    <div class="hero-tag fade-up">Web3 Builder · Philippines · Since 2024</div>
+    <h1 class="hero-name fade-up delay-1">
+      Pauline Bianca<span>Sanchez</span>
+    </h1>
+    <div class="hero-alias fade-up delay-2">aka <em>Prëtty</em> / @pretty_yol29</div>
+    <p class="hero-bio fade-up delay-3">
+      Web3 content creator, community architect, and startup builder based in <strong>Alabang, Philippines</strong>.
+      Building at the intersection of blockchain education, DeFi strategy, and youth empowerment.
+      Currently leading <strong>BUILDMINDZ</strong> — a movement to create 1,000 Filipino founders.
+    </p>
+    <div class="hero-ctas fade-up delay-4">
+      <a href="#buildmindz" class="btn-primary">View BuildMindz</a>
+      <a href="#projects" class="btn-outline">Explore Projects</a>
+    </div>
+
+    <div class="hero-stats fade-up delay-5">
+      <div class="stat-box">
+        <div class="stat-num">15K+</div>
+        <div class="stat-label">Community Members</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">5+</div>
+        <div class="stat-label">Web3 Protocols</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">1,000</div>
+        <div class="stat-label">Youth Target</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">2026</div>
+        <div class="stat-label">Scale Year</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ROLES -->
+<section id="roles">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Roles & Protocols</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="roles-grid">
+      <div class="role-card featured">
+        <div class="role-protocol">BuildMindz NGO</div>
+        <div class="role-title">Project Manager</div>
+        <div class="role-desc">Leading a government-registered non-profit empowering 1,000 Filipino youth to build their first ₱1M ARR project. Operating at the intersection of tech education, community building, and startup incubation.</div>
+        <div class="role-tags">
+          <span class="tag gold">NGO</span>
+          <span class="tag gold">Startup Incubation</span>
+          <span class="tag">Youth Empowerment</span>
+          <span class="tag">Philippines</span>
+        </div>
+      </div>
+
+      <div class="role-card featured">
+        <div class="role-protocol">Sign Protocol</div>
+        <div class="role-title">Community Admin & Content Creator</div>
+        <div class="role-desc">Managing Orange Dynasty — a 15,000+ member Telegram community for Sign Protocol. Driving engagement through lore creation, meme content, and community governance.</div>
+        <div class="role-tags">
+          <span class="tag">15K+ Members</span>
+          <span class="tag">Telegram</span>
+          <span class="tag">Lore & Memes</span>
+        </div>
+      </div>
+
+      <div class="role-card featured">
+        <div class="role-protocol">Xeleb Protocol</div>
+        <div class="role-title">AI Influencer — PrettyX</div>
+        <div class="role-desc">Launched and manages PrettyX AI, a personal AI character on Xeleb 2049. Pioneer in the emerging AI influencer vertical within Web3 entertainment ecosystems.</div>
+        <div class="role-tags">
+          <span class="tag">AI Identity</span>
+          <span class="tag">Xeleb 2049</span>
+          <span class="tag">$XCX</span>
+        </div>
+      </div>
+
+      <div class="role-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
+          <div class="role-protocol" style="margin-bottom:0;">Datagram Network</div>
+          <span style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;color:var(--text-dim);background:rgba(255,255,255,0.04);border:0.5px solid var(--border);padding:0.2rem 0.6rem;border-radius:2rem;">INACTIVE</span>
+        </div>
+        <div class="role-title">Ambassador</div>
+        <div class="role-desc">Official ambassador building community presence, creating educational content, and expanding the Datagram ecosystem across Southeast Asian Web3 networks.</div>
+        <div class="role-tags">
+          <span class="tag">Ambassador</span>
+          <span class="tag">SEA Markets</span>
+          <span class="tag">Education</span>
+        </div>
+      </div>
+
+      <div class="role-card featured">
+        <div class="role-protocol">Noon Capital</div>
+        <div class="role-title">Ambassador — RWA & Real Yield DeFi</div>
+        <div class="role-desc">Advocating for real-world asset tokenization and sustainable DeFi yield. Long-term $NOON holder with focus on bridging traditional Filipino finance with on-chain infrastructure.</div>
+        <div class="role-tags">
+          <span class="tag">RWA</span>
+          <span class="tag">$NOON</span>
+          <span class="tag">Real Yield</span>
+          <span class="tag">DeFi</span>
+        </div>
+      </div>
+
+      <div class="role-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
+          <div class="role-protocol" style="margin-bottom:0;">KoalaSwap</div>
+          <span style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;color:var(--text-dim);background:rgba(255,255,255,0.04);border:0.5px solid var(--border);padding:0.2rem 0.6rem;border-radius:2rem;">INACTIVE</span>
+        </div>
+        <div class="role-title">Content Creator & Digital Campaign Strategist</div>
+        <div class="role-desc">Driving digital campaigns, community content, and strategic communication for KoalaSwap across social channels. Skilled in multi-platform Web3 narrative building.</div>
+        <div class="role-tags">
+          <span class="tag">DeFi</span>
+          <span class="tag">Campaign Strategy</span>
+          <span class="tag">Content</span>
+        </div>
+      </div>
+      <div class="role-card featured">
+        <div class="role-protocol">Orange Circle</div>
+        <div class="role-title">Core Team Member</div>
+        <div class="role-desc">Core team of a global, community-driven Web3 initiative connecting talent with opportunity across trading, community building, and decentralized careers. Orange Circle bridges builders and job seekers worldwide — not limited to any single protocol.</div>
+        <div class="role-tags">
+          <span class="tag gold">Core Team</span>
+          <span class="tag gold">Global</span>
+          <span class="tag">Web3 Talent</span>
+          <span class="tag">Trading</span>
+          <span class="tag">Community Building</span>
+        </div>
+      </div>
+
+      <div class="role-card featured">
+        <div class="role-protocol">MGBX Global Exchange</div>
+        <div class="role-title">Affiliate</div>
+        <div class="role-desc">Affiliate of MGBX, a global cryptocurrency exchange. Driving awareness, onboarding, and community growth for the platform across Southeast Asian and global Web3 networks.</div>
+        <div class="role-tags">
+          <span class="tag gold">Affiliate</span>
+          <span class="tag">CEX</span>
+          <span class="tag">Global Exchange</span>
+          <span class="tag">Web3</span>
+        </div>
+      </div>
+
+      <div class="role-card featured">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
+          <div class="role-protocol" style="margin-bottom:0;">Reddit</div>
+          <a href="https://www.reddit.com/user/wookie0507/" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;color:var(--accent-cyan);text-decoration:none;">u/wookie0507 ↗</a>
+        </div>
+        <div class="role-title">Writer & Content Contributor</div>
+        <div class="role-desc">Publishing Web3 insights, community narratives, and opinion pieces on Reddit. Building a voice in broader crypto and tech discourse beyond native Web3 platforms.</div>
+        <div class="role-tags">
+          <span class="tag gold">Writing</span>
+          <span class="tag">Web3 Opinions</span>
+          <span class="tag">Community</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- BUILDMINDZ FEATURE -->
+<section id="buildmindz">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">BuildMindz</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="buildmindz-feature">
+      <div class="bm-grid">
+        <div class="bm-left">
+          <div class="bm-eyebrow">Flagship Initiative · 2026 Scale Year</div>
+          <h3 class="bm-title">Building the<br><span>Next 1,000</span><br>Filipino Founders</h3>
+          <p class="bm-desc">
+            BUILDMINDZ is a government-registered non-profit NGO founded October 2025. It empowers Filipino youth through hands-on AI and blockchain education, university partnerships, hackathons, and direct startup incubation — with a single defining metric: first revenue.
+          </p>
+          <div class="role-tags">
+            <span class="tag gold">Gov-Registered NGO</span>
+            <span class="tag gold">₱1M ARR Mission</span>
+            <span class="tag">AI + Blockchain</span>
+            <span class="tag">Startup Incubation</span>
+            <span class="tag">Philippines</span>
+          </div>
+        </div>
+
+        <div class="bm-right">
+          <div class="bm-metrics">
+            <div class="bm-metric">
+              <div class="bm-metric-val">40+</div>
+              <div class="bm-metric-label">Workshops 2026</div>
+            </div>
+            <div class="bm-metric">
+              <div class="bm-metric-val">5K+</div>
+              <div class="bm-metric-label">Students Target</div>
+            </div>
+            <div class="bm-metric">
+              <div class="bm-metric-val">30+</div>
+              <div class="bm-metric-label">University Partners</div>
+            </div>
+            <div class="bm-metric">
+              <div class="bm-metric-val">$120K</div>
+              <div class="bm-metric-label">Hackathon Pool</div>
+            </div>
+          </div>
+
+          <div class="bm-timeline">
+            <div class="bm-tl-item">
+              <div class="bm-tl-dot"></div>
+              <div class="bm-tl-text"><strong>Q2 2026</strong> — Stellar Foundation Hackathon · $120K prize pool</div>
+            </div>
+            <div class="bm-tl-item">
+              <div class="bm-tl-dot"></div>
+              <div class="bm-tl-text"><strong>Q3 2026</strong> — Tech Week Philippines · One Ayala · 1,000–2,000 attendees</div>
+            </div>
+            <div class="bm-tl-item">
+              <div class="bm-tl-dot"></div>
+              <div class="bm-tl-text"><strong>Q4 2026</strong> — Token2049 Singapore · Buildztudio venture studio launch</div>
+            </div>
+            <div class="bm-tl-item">
+              <div class="bm-tl-dot"></div>
+              <div class="bm-tl-text"><strong>2028</strong> — 1,000 Filipino youth with ₱1M ARR projects</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Active Projects</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="project-icon">👑</div>
+        <div class="project-name">Orange Dynasty</div>
+        <div class="project-desc">Sign Protocol's premier Filipino-led Telegram community. 15,000+ members strong, driven by transparency, governance, and grassroots Web3 education.</div>
+        <div class="project-metric">15,000+ Members · Sign Protocol</div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-icon">✨</div>
+        <div class="project-name">PrettyX AI</div>
+        <div class="project-desc">A personal AI influencer character on Xeleb 2049 — blending futuristic aesthetics, anime culture, and Web3 identity into a living digital persona.</div>
+        <div class="project-metric">Xeleb Protocol · $XCX · AI Identity</div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-icon">⚡</div>
+        <div class="project-name">Clan Staking</div>
+        <div class="project-desc">Active participant in clan staking mechanics. Orange Circle strategically exited Clan Wars to preserve community alignment and long-term integrity.</div>
+        <div class="project-metric">Community Governance · Staking Strategy</div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-icon">🏗️</div>
+        <div class="project-name">Buildztudio</div>
+        <div class="project-desc">Upcoming venture studio under BuildMindz, launching Q4 2026. Focused on developing investable, revenue-generating startups from the Filipino youth pipeline.</div>
+        <div class="project-metric">Launch: Q4 2026 · Venture Studio</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- STACK & SKILLS -->
+<section id="stack">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Stack & Skills</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="skills-layout">
+      <div>
+        <div class="skill-group-label">Core Competencies</div>
+
+        <div class="skill-item">
+          <div class="skill-row">
+            <span class="skill-name">Community Building & Management</span>
+            <span class="skill-pct">95%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-fill" style="width:95%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-row">
+            <span class="skill-name">Web3 Content Creation (Memes, Lore)</span>
+            <span class="skill-pct">92%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-fill" style="width:92%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-row">
+            <span class="skill-name">Ambassador & Partnership Strategy</span>
+            <span class="skill-pct">88%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-fill" style="width:88%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-row">
+            <span class="skill-name">DeFi Strategy & Tokenomics</span>
+            <span class="skill-pct">82%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-fill" style="width:82%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-row">
+            <span class="skill-name">Project Management & NGO Operations</span>
+            <span class="skill-pct">85%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-row">
+            <span class="skill-name">Digital Campaign Strategy</span>
+            <span class="skill-pct">90%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-fill" style="width:90%"></div></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="skill-group-label">Chains & Ecosystems</div>
+        <div class="chains-grid">
+          <span class="chain-pill">Solana</span>
+          <span class="chain-pill">BNB Chain</span>
+          <span class="chain-pill">Ethereum</span>
+          <span class="chain-pill">Base</span>
+          <span class="chain-pill">Sui</span>
+          <span class="chain-pill">Avalanche</span>
+          <span class="chain-pill">Stellar</span>
+          <span class="chain-pill">Core Chain</span>
+        </div>
+
+        <div class="skill-group-label" style="margin-top: 2rem;">Active Token Holdings</div>
+        <div class="tokens-row">
+          <div class="token-card">
+            <div class="token-symbol">$NOON</div>
+            <div class="token-name">Noon Capital</div>
+            <div class="token-strategy">Long-Term Staking</div>
+          </div>
+          <div class="token-card">
+            <div class="token-symbol">$XCX</div>
+            <div class="token-name">Xeleb Protocol</div>
+            <div class="token-strategy">Long-Term Staking</div>
+          </div>
+          <div class="token-card">
+            <div class="token-symbol">$SIGN</div>
+            <div class="token-name">Sign Protocol</div>
+            <div class="token-strategy">Holder</div>
+          </div>
+        </div>
+
+        <div class="skill-group-label" style="margin-top: 2rem;">Education</div>
+        <div class="value-item" style="margin-top: 0;">
+          <div class="value-icon">🎓</div>
+          <div class="value-content">
+            <div class="value-title">BS Management</div>
+            <div class="value-desc">Lyceum of the Philippines University — Alabang · 2011<br>Background in Computer Programming</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- PHILOSOPHY -->
+<section class="philosophy-section" id="philosophy">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2 class="section-title">Philosophy</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="philosophy-grid">
+      <div class="quote-block">
+        <span class="quote-mark">"</span>
+        <div class="quote-text">First revenue is the most important milestone — it transforms students into founders.</div>
+        <div class="quote-attr">BuildMindz Core Thesis · 2025</div>
+      </div>
+
+      <div class="values-list">
+        <div class="value-item">
+          <div class="value-icon">🔗</div>
+          <div class="value-content">
+            <div class="value-title">Community Over Core Teams</div>
+            <div class="value-desc">Values grassroots, community-driven governance and transparency over top-down communication.</div>
+          </div>
+        </div>
+        <div class="value-item">
+          <div class="value-icon">📐</div>
+          <div class="value-content">
+            <div class="value-title">Real Yield Over Hype</div>
+            <div class="value-desc">Long-term DeFi strategy focused on sustainable, real-world backed yield and tokenized assets.</div>
+          </div>
+        </div>
+        <div class="value-item">
+          <div class="value-icon">🌏</div>
+          <div class="value-content">
+            <div class="value-title">Filipino-First Builder Mindset</div>
+            <div class="value-desc">Rooted in the Philippines — building systems that empower Filipino youth to lead globally.</div>
+          </div>
+        </div>
+        <div class="value-item">
+          <div class="value-icon">⚙️</div>
+          <div class="value-content">
+            <div class="value-title">Applied Skills Over Theory</div>
+            <div class="value-desc">Education must produce builders. Every workshop, hackathon, and program is designed for real output.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">PRËTTY.ETH</div>
+  <div class="footer-info">
+    Pauline Bianca Sanchez · Alabang, Philippines<br>
+    Web3 Creator · Community Leader · NGO Project Manager
+  </div>
+  <div class="footer-handle">
+    <span>@pretty_yol29</span> · <span>TG: @pretty0016</span> · <span>Discord: pretty_miyaw29</span>
+  </div>
+</footer>
+
+</body>
+</html>
