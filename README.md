@@ -24,6 +24,7 @@ A community-first builder operating at the intersection of DeFi, attestation pro
 
 ## Roles & Projects
 
+
 ### 🟠 Sign Protocol — Orange Dynasty
 - **Role:** Community Lead & Ambassador
 - Manages Orange Dynasty Telegram community (15,000+ members)
@@ -36,6 +37,29 @@ A community-first builder operating at the intersection of DeFi, attestation pro
 - Launched personal AI influencer on Xeleb Protocol
 - Created **PrettyX** character on Xeleb 2049
 - Long-term $XCX staker · Proof-of-Utility content creator
+
+### 🟠 SOVREN TECH
+- **Role:** Active Global Ambassador
+- Advocate Sovren’s mission of verified work and decentralized infrastructure
+- Educate users on Sovren’s ecosystem apps (Parler, Play, Pay, Shop, Studio, Blu) and node operator opportunities.
+- Collaborate with partners, validators, and community leaders to expand Sovren’s reach.
+- Create content, threads, and lore drops that amplify Sovren’s brand voice.
+- Provide feedback from grassroots communities to Sovren’s core team for ecosystem growth.
+
+- ###  🎨 ORBINUM NETWORK
+- **Role:** Ambassador Tier1
+- Represent Orbinum Network in global Web3 and DeFi communities
+- Educate users on Orbinum’s features: shielded transactions, zk‑proofs, Substrate foundation, and sovereign identity
+- Support onboarding of new members through the Orbinum Hub and community channels.
+- Collaborate with fellow ambassadors to expand reach and foster grassroots engagement.
+
+- ### 💻 NOAH AI
+- **Role;** Ambassador/ Early Tester
+- Represent Noah.AI in global Web3 and AI communities, highlighting its innovation and vision.
+- Educate users on Noah’s AI playground, wallet integration, and decentralized features.
+- Support onboarding by guiding new members through account creation, wallet security, and platform exploration.
+- Actively test new features, report issues, and provide feedback to improve user experience.
+
 
 ### 📡 Datagram Network
 - **Role:** Confirmed Ambassador
