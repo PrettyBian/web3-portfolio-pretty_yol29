@@ -1,4 +1,4 @@
-# 🟠 Web3 Portfolio — Pauline Bianca Sanchez (@pretty_yol29)
+# 🟠 Web3 Portfolio — Pauline Bianca Sanchez 
 
 > Content Creator · Ambassador · Community Leader · NGO Project Manager  
 > Based in Muntinlupa, Philippines · Active since 2021
